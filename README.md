@@ -14,8 +14,8 @@ Welcome to ChatGPT Scheduler! This app lets you schedule prompts for OpenAI's Ch
 
 ### 1. Clone the repository
 ```bash
-git clone https://github.com/yourusername/chatgpt-scheduler.git
-cd chatgpt-scheduler/demo
+git clone https://github.com/omr1k/chatgpt-scheduler.git
+cd chatgpt-scheduler
 ```
 
 ### 2. Configure the application
