@@ -1,0 +1,362 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Configuration - ChatGPT Scheduler</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <style>
+        .card {
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            border: none;
+            border-radius: 10px;
+        }
+    </style>
+</head>
+<body class="bg-light">
+    <nav class="navbar navbar-expand-lg navbar-dark bg-primary">
+        <div class="container">
+            <a class="navbar-brand" href="/">
+                <i class="fas fa-robot me-2"></i>ChatGPT Scheduler
+            </a>
+            <div class="navbar-nav ms-auto">
+                <a class="nav-link active" href="/web/config">
+                    <i class="fas fa-cog me-1"></i>Config
+                </a>
+                <a class="nav-link" href="/web/schedules">
+                    <i class="fas fa-clock me-1"></i>Schedules
+                </a>
+                <a class="nav-link" href="/web/results">
+                    <i class="fas fa-list me-1"></i>Results
+                </a>
+            </div>
+        </div>
+    </nav>
+
+    <div class="container mt-4">
+        <div class="row justify-content-center">
+            <div class="col-md-8">
+                <div class="card">
+                    <div class="card-header">
+                        <h5 class="mb-0">
+                            <i class="fas fa-key me-2"></i>OpenAI API Configuration
+                        </h5>
+                    </div>
+                    <div class="card-body">
+                        <div class="alert alert-info">
+                            <i class="fas fa-info-circle me-2"></i>
+                            <strong>How to get your OpenAI API key:</strong>
+                            <ol class="mb-0 mt-2">
+                                <li>Go to <a href="https://platform.openai.com/api-keys" target="_blank">OpenAI Platform</a></li>
+                                <li>Sign in or create an account</li>
+                                <li>Click "Create new secret key"</li>
+                                <li>Copy the generated key and paste it below</li>
+                            </ol>
+                        </div>
+
+                        <form id="configForm">
+                            <div class="mb-3">
+                                <label for="apiKey" class="form-label">OpenAI API Key</label>
+                                <div class="input-group">
+                                    <input type="password" class="form-control" id="apiKey" name="openaiApiKey" 
+                                           placeholder="sk-..." required>
+                                    <button class="btn btn-outline-secondary" type="button" id="togglePassword">
+                                        <i class="fas fa-eye"></i>
+                                    </button>
+                                </div>
+                                <div class="form-text">Your API key is stored securely and never shared.</div>
+                            </div>
+                            
+                            <div class="mb-3">
+                                <label for="userEmail" class="form-label">Your Email Address</label>
+                                <input type="email" class="form-control" id="userEmail" name="userEmail" 
+                                       placeholder="your-email@example.com">
+                                <div class="form-text">ChatGPT results will be sent to this email address.</div>
+                            </div>
+                            
+                            <div class="mb-3">
+                                <label for="mailtrapToken" class="form-label">Mailtrap API Token</label>
+                                <div class="input-group">
+                                    <input type="password" class="form-control" id="mailtrapToken" name="mailtrapToken" 
+                                           placeholder="Your Mailtrap API token">
+                                    <button class="btn btn-outline-secondary" type="button" id="toggleMailtrapPassword">
+                                        <i class="fas fa-eye"></i>
+                                    </button>
+                                </div>
+                                <div class="form-text">
+                                    <strong>How to get your Mailtrap API token:</strong><br>
+                                    <ol class="mb-0 mt-2">
+                                        <li>Go to <a href="https://mailtrap.io" target="_blank">Mailtrap</a></li>
+                                        <li>Sign in and go to your inbox</li>
+                                        <li>Click "API" tab</li>
+                                        <li>Copy your API token</li>
+                                    </ol>
+                                </div>
+                            </div>
+                            
+                            <div class="mb-3">
+                                <label for="timeZone" class="form-label">Time Zone</label>
+                                <select class="form-select" id="timeZone" name="timeZone">
+                                    <option value="UTC">UTC</option>
+                                    <option value="Europe/Berlin">Europe/Berlin</option>
+                                    <option value="America/New_York">America/New_York</option>
+                                    <option value="Asia/Dubai">Asia/Dubai</option>
+                                    <option value="Asia/Riyadh">Asia/Riyadh</option>
+                                    <option value="Asia/Kolkata">Asia/Kolkata</option>
+                                    <option value="Asia/Tokyo">Asia/Tokyo</option>
+                                    <option value="Europe/London">Europe/London</option>
+                                    <option value="Africa/Cairo">Africa/Cairo</option>
+                                    <option value="America/Los_Angeles">America/Los_Angeles</option>
+                                    <option value="Australia/Sydney">Australia/Sydney</option>
+                                    <option value="Custom">Custom...</option>
+                                </select>
+                                <input type="text" class="form-control mt-2 d-none" id="customTimeZone" placeholder="Enter custom time zone (e.g. Africa/Nairobi)">
+                                <div class="form-text">Set the time zone for schedule execution. Default is UTC.</div>
+                            </div>
+
+                            <div class="mb-3">
+                                <label for="gptModel" class="form-label">GPT Model</label>
+                                <select class="form-select" id="gptModel" name="gptModel">
+                                    <option value="gpt-3.5-turbo">gpt-3.5-turbo</option>
+                                    <option value="gpt-4">gpt-4</option>
+                                    <option value="gpt-4o">gpt-4o</option>
+                                    <option value="Custom">Custom...</option>
+                                </select>
+                                <input type="text" class="form-control mt-2 d-none" id="customGptModel" placeholder="Enter custom model name">
+                                <div class="form-text">Choose the GPT model to use for completions.</div>
+                            </div>
+
+                            <div class="card border-primary mb-3">
+                                <div class="card-header bg-primary text-white">
+                                    <i class="fas fa-database me-2"></i>Database Configuration
+                                </div>
+                                <div class="card-body">
+                                    <div class="mb-3">
+                                        <label class="form-label">Database Host</label>
+                                        <input type="text" class="form-control" id="dbHost" name="dbHost" placeholder="ep-autumn-fire-a29ri1wy-pooler.eu-central-1.aws.neon.tech">
+                                    </div>
+                                    <div class="mb-3">
+                                        <label class="form-label">Database Port</label>
+                                        <input type="text" class="form-control" id="dbPort" name="dbPort" placeholder="5432">
+                                    </div>
+                                    <div class="mb-3">
+                                        <label class="form-label">Database Name</label>
+                                        <input type="text" class="form-control" id="dbName" name="dbName" placeholder="neondb">
+                                    </div>
+                                    <div class="mb-3">
+                                        <label class="form-label">Database Username</label>
+                                        <input type="text" class="form-control" id="dbUsername" name="dbUsername" placeholder="neondb_owner">
+                                    </div>
+                                    <div class="mb-3">
+                                        <label class="form-label">Database Password</label>
+                                        <div class="input-group">
+                                            <input type="password" class="form-control" id="dbPassword" name="dbPassword" placeholder="Your DB password">
+                                            <button class="btn btn-outline-secondary" type="button" id="toggleDbPassword">
+                                                <i class="fas fa-eye"></i>
+                                            </button>
+                                        </div>
+                                    </div>
+                                    <div class="mb-3">
+                                        <label class="form-label">Database Params (optional)</label>
+                                        <input type="text" class="form-control" id="dbParams" name="dbParams" placeholder="sslmode=require&channel_binding=require">
+                                    </div>
+                                </div>
+                            </div>
+
+                            
+                            <div class="d-grid gap-2">
+                                <button type="submit" class="btn btn-primary">
+                                    <i class="fas fa-save me-2"></i>Save Configuration
+                                </button>
+                                <a href="/" class="btn btn-outline-secondary">
+                                    <i class="fas fa-arrow-left me-2"></i>Back to Dashboard
+                                </a>
+                            </div>
+                        </form>
+
+                        <div id="statusMessage" class="mt-3" style="display: none;"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        // Prefill config values on page load
+        window.addEventListener('DOMContentLoaded', function() {
+            fetch('/config')
+                .then(response => response.json())
+                .then(data => {
+                    if (data.apiKey) document.getElementById('apiKey').value = data.apiKey;
+                    if (data.userEmail) document.getElementById('userEmail').value = data.userEmail;
+                    if (data.mailtrapToken) document.getElementById('mailtrapToken').value = data.mailtrapToken;
+                    if (data.dbHost) document.getElementById('dbHost').value = data.dbHost;
+                    if (data.dbPort) document.getElementById('dbPort').value = data.dbPort;
+                    if (data.dbName) document.getElementById('dbName').value = data.dbName;
+                    if (data.dbUsername) document.getElementById('dbUsername').value = data.dbUsername;
+                    if (data.dbPassword) document.getElementById('dbPassword').value = data.dbPassword;
+                    if (data.dbParams) document.getElementById('dbParams').value = data.dbParams;
+                    if (data.timeZone) {
+                        const tzSelect = document.getElementById('timeZone');
+                        let found = false;
+                        for (let i = 0; i < tzSelect.options.length; i++) {
+                            if (tzSelect.options[i].value === data.timeZone) {
+                                tzSelect.selectedIndex = i;
+                                found = true;
+                                break;
+                            }
+                        }
+                        if (!found) {
+                            tzSelect.value = 'Custom';
+                            document.getElementById('customTimeZone').classList.remove('d-none');
+                            document.getElementById('customTimeZone').value = data.timeZone;
+                        }
+                    }
+                    if (data.gptModel) {
+                        const modelSelect = document.getElementById('gptModel');
+                        let found = false;
+                        for (let i = 0; i < modelSelect.options.length; i++) {
+                            if (modelSelect.options[i].value === data.gptModel) {
+                                modelSelect.selectedIndex = i;
+                                found = true;
+                                break;
+                            }
+                        }
+                        if (!found) {
+                            modelSelect.value = 'Custom';
+                            document.getElementById('customGptModel').classList.remove('d-none');
+                            document.getElementById('customGptModel').value = data.gptModel;
+                        }
+                    }
+                });
+        });
+
+        document.getElementById('configForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            const apiKey = document.getElementById('apiKey').value;
+            const userEmail = document.getElementById('userEmail').value;
+            const mailtrapToken = document.getElementById('mailtrapToken').value;
+            const statusDiv = document.getElementById('statusMessage');
+            const dbHost = document.getElementById('dbHost').value;
+            const dbPort = document.getElementById('dbPort').value;
+            const dbName = document.getElementById('dbName').value;
+            const dbUsername = document.getElementById('dbUsername').value;
+            const dbPassword = document.getElementById('dbPassword').value;
+            const dbParams = document.getElementById('dbParams').value;
+            let timeZone = document.getElementById('timeZone').value;
+            if (timeZone === 'Custom') {
+                timeZone = document.getElementById('customTimeZone').value;
+            }
+            let gptModel = document.getElementById('gptModel').value;
+            if (gptModel === 'Custom') {
+                gptModel = document.getElementById('customGptModel').value;
+            }
+            
+            fetch('/config', {
+                method: 'PUT',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({
+                    openaiApiKey: apiKey,
+                    userEmail: userEmail,
+                    mailtrapToken: mailtrapToken,
+                    dbHost: dbHost,
+                    dbPort: dbPort,
+                    dbName: dbName,
+                    dbUsername: dbUsername,
+                    dbPassword: dbPassword,
+                    dbParams: dbParams,
+                    timeZone: timeZone,
+                    gptModel: gptModel
+                })
+            })
+            .then(response => {
+                if (response.ok) {
+                    let msg = '<div class="alert alert-success"><i class="fas fa-check-circle me-2"></i>Configuration saved successfully!';
+                    if (dbHost || dbPort || dbName || dbUsername || dbPassword || dbParams) {
+                        msg += '<br><strong>Database configuration updated. Please <span class="text-danger">restart</span> the application for changes to take effect.</strong>';
+                    }
+                    msg += '</div>';
+                    statusDiv.innerHTML = msg;
+                    statusDiv.style.display = 'block';
+                    // Do not clear apiKey field after save
+                } else {
+                    throw new Error('Failed to save API key');
+                }
+            })
+            .catch(error => {
+                statusDiv.innerHTML = '<div class="alert alert-danger"><i class="fas fa-exclamation-triangle me-2"></i>Error saving API key. Please try again.</div>';
+                statusDiv.style.display = 'block';
+            });
+        });
+
+        // Toggle password visibility
+        document.getElementById('togglePassword').addEventListener('click', function() {
+            const apiKeyInput = document.getElementById('apiKey');
+            const icon = this.querySelector('i');
+            
+            if (apiKeyInput.type === 'password') {
+                apiKeyInput.type = 'text';
+                icon.classList.remove('fa-eye');
+                icon.classList.add('fa-eye-slash');
+            } else {
+                apiKeyInput.type = 'password';
+                icon.classList.remove('fa-eye-slash');
+                icon.classList.add('fa-eye');
+            }
+        });
+
+        // Toggle Mailtrap password visibility
+        document.getElementById('toggleMailtrapPassword').addEventListener('click', function() {
+            const mailtrapInput = document.getElementById('mailtrapToken');
+            const icon = this.querySelector('i');
+            
+            if (mailtrapInput.type === 'password') {
+                mailtrapInput.type = 'text';
+                icon.classList.remove('fa-eye');
+                icon.classList.add('fa-eye-slash');
+            } else {
+                mailtrapInput.type = 'password';
+                icon.classList.remove('fa-eye-slash');
+                icon.classList.add('fa-eye');
+            }
+        });
+        // Toggle DB password visibility
+        document.getElementById('toggleDbPassword').addEventListener('click', function() {
+            const dbPasswordInput = document.getElementById('dbPassword');
+            const icon = this.querySelector('i');
+            if (dbPasswordInput.type === 'password') {
+                dbPasswordInput.type = 'text';
+                icon.classList.remove('fa-eye');
+                icon.classList.add('fa-eye-slash');
+            } else {
+                dbPasswordInput.type = 'password';
+                icon.classList.remove('fa-eye-slash');
+                icon.classList.add('fa-eye');
+            }
+        });
+
+        // Show/hide custom time zone input
+        document.getElementById('timeZone').addEventListener('change', function() {
+            if (this.value === 'Custom') {
+                document.getElementById('customTimeZone').classList.remove('d-none');
+            } else {
+                document.getElementById('customTimeZone').classList.add('d-none');
+            }
+        });
+
+        // Show/hide custom GPT model input
+        document.getElementById('gptModel').addEventListener('change', function() {
+            if (this.value === 'Custom') {
+                document.getElementById('customGptModel').classList.remove('d-none');
+            } else {
+                document.getElementById('customGptModel').classList.add('d-none');
+            }
+        });
+    </script>
+</body>
+</html> 
